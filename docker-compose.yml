@@ -1,0 +1,8 @@
+version: '01'
+
+services:
+  db:
+    build: /src/db
+    ports:
+      - "3306:3306"
+    container_name: db
