@@ -1,0 +1,3 @@
+#Archivos que ignoramos a la hora de construir nuestras imagenes
+node_modules
+npm-debug.log

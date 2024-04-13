@@ -1,8 +1,35 @@
-version: '01'
+#Version del docker-compose (cada quien establece su versión)
+version: '0.1'
 
 services:
   db:
-    build: /src/db
+    build: /db
     ports:
       - "3306:3306"
     container_name: db
+
+
+
+  server:
+
+    #Ubicacion del dockerfile
+    build: /api
+    ports:
+      - "8080:8080"
+
+    #nombre asignar al contenedor
+    container_name: server
+
+    #variables de entorno
+    environment:
+      - host=db
+      - user=root
+      - password=root
+      - database=apiDb
+    
+    #Establece dependencia (este servicio depende del servicio db)
+    depends_on:
+      - db
+    #Reinicia el servicio en caso de fallo hasta que se pueda conectar a la base de datos
+    restart: on-failure
+    

@@ -16,6 +16,9 @@ RUN npm install
 #Nota: el directorio node_modules lo ignoraremos especificandolo en el archivo llamado .dockerignore
 COPY . .
 
+EXPOSE 8080
+
+
 # Comando para ejecutar la aplicación
 # CMD nos dice que ejecute el comando node al archivo app.js que esta en el directorio src de mi contenedor
 CMD ["node", "src/index.js"]

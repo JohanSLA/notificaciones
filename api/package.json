@@ -4,12 +4,15 @@
   "description": "Aplicacion api-Rest basica",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "nodemon ./src/index.js"
   },
   "author": "Johan Londoño",
   "license": "ISC",
   "dependencies": {
+    "express": "^4.19.2",
+    "jsonwebtoken": "^9.0.2",
     "mysql": "^2.18.1",
-    "mysql2": "^3.9.3"
+    "mysql2": "^3.9.3",
+    "nodemon": "^3.1.0"
   }
 }
