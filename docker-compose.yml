@@ -3,11 +3,10 @@ version: '0.1'
 
 services:
   db:
-    build: /db
+    build: ./db
     ports:
       - "3306:3306"
     container_name: db
-
 
 
   server:

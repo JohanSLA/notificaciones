@@ -1,0 +1,132 @@
+openapi: 3.0.0
+info:
+  title: inicio_Api_parte3
+  description: Una API de ejemplo para propósitos educativos.
+  version: 1.0.0
+servers:
+  - url: http://localhost:8080
+    description: Servidor de desarrollo
+paths:
+  /busqueda?id={id}:
+    get:
+      summary: Obtiene el usuario del id
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: ID del usuario a obtener
+      responses:
+        '200':
+          description: datos del usuario buscado
+        '500':
+          description: Error interno del servidor
+        '404':
+          description: Usuario no encontrado
+
+  /busqueda/todos:
+    get:
+      summary: Obtiene todos los usuarios registrados
+      responses:
+        '200':
+          description: Lista de usuarios obtenida correctamente
+        '500':
+          description: Error interno del servidor
+        '404':
+          description: Usuarios no encontrado
+
+  /login:
+    get:
+      summary: Obtiene todos los usuarios registrados
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: String
+                contrasena:
+                  type: String
+      responses:
+        '200':
+          description: token del usuario
+        '500':
+          description: Error interno del servidor
+        '404':
+          description: Los atributos email y contrasena son obligatorios
+          description: Problemas con las credenciales
+          description: Problema con la url
+  /agregar:      
+    post:
+      summary: Crear un nuevo usuario
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: integer
+                nombre:
+                  type: String
+                email:
+                  type: String
+                contrasena:
+                  type: String
+      responses:
+        '400':
+          description: Error en el cuerpo de la solicitud
+        '200':
+          description: Usuario registrado con exito
+        '404':
+          description: Problema con el cuerpo de la solicitud
+  
+  /actualizar:
+    put:
+      summary: Actualiza los datos del usuario
+      parameters:
+        - in: Headers
+          name: authorization
+          required: true
+          schema:
+            type: String
+          description: Token que arroja al hacer login por el usuario
+      responses:
+        '400':
+          description: Error en el cuerpo de la solicitud
+          description: Lo sentimos,verifique su atenticación y que el id sea valido
+        '500':
+          description: Error interno del servidor
+        '404':
+          description: No se encontro un usuario registrado con ese id
+        '200':
+          description: Usuario actualizado con exito
+
+  /eliminar?id={id}:
+    delete:
+      summary: Elimina al usuario
+        parameters:
+          - in: Headers
+            name: authorization
+            required: true
+            schema:
+              type: String
+            description: Token que arroja al hacer login por el usuario
+          - in: path
+            name: id
+            required: true
+            schema:
+              type: integer
+            description: id del usuario a eliminar
+        responses:
+          '400':
+            description: Error en el cuerpo de la solicitud
+            description: Lo sentimos,verifique su atenticación o que no este eliminando otro usuario que no sea usted
+          '200':
+            description: Usuario eliminado con exito
+
+  

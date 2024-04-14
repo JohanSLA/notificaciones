@@ -2,6 +2,7 @@ const mysql = require('mysql2')
 const querystring = require('querystring');
 const jwt = require('jsonwebtoken');
 const { parse } = require('path');
+const { Console } = require('console');
 
 
 
@@ -31,6 +32,7 @@ function manejarSolicitudGet(request,response,conexion,tablaUsuarios){
             }
       
             if (results.length === 0) {
+              console.log("Servidor: Usuario no encontrado");
               response.writeHead(404, {'Content-Type': 'text/plain'});
               response.end('Usuario no encontrado');
               return;
@@ -66,7 +68,7 @@ function manejarSolicitudGet(request,response,conexion,tablaUsuarios){
               usuarios += `ID: ${usuario.id}, Nombre: ${usuario.nombre}, Email: ${usuario.email}`+'    ';
               });
 
-             
+               response.writeHead(200, {'Content-Type': 'text/plain'});
                response.end(JSON.stringify(usuarios));
         });
 
@@ -366,7 +368,6 @@ function verificarToken(idUsuario,request){
     // Verificar y decodificar el token JWT
     jwt.verify(token, 'secreto', (err, decoded) => {
         if (err) {
-            console.log('Servidor: token invalido o ausente')
             estadoRetornar= false;
         }
 
@@ -375,19 +376,26 @@ function verificarToken(idUsuario,request){
             estadoRetornar= false;
         }else{
 
-            // Verificar el emisor y la vigencia del token
-            //decode.iss extrae el emisor del token
-            //decode.idUsuario extrae el id del usuario del token
-            //parseInt(idUsuario) convierte en int el valor ya que el metodo lo arroja como string
-            if (decoded.iss !== 'ingesis.uniquindio.edu.co' || decoded.idUsuario !== parseInt(idUsuario) || Date.now() >= decoded.exp * 1000) {
-                console.log('Servidor: token no valido o expirado')
+
+            try {
+                // Verificar el emisor y la vigencia del token
+                //decode.iss extrae el emisor del token
+                //decode.idUsuario extrae el id del usuario del token
+                //parseInt(idUsuario) convierte en int el valor ya que el metodo lo arroja como string
+                if (decoded.iss !== 'ingesis.uniquindio.edu.co' || decoded.idUsuario !== parseInt(idUsuario) || Date.now() >= decoded.exp * 1000) {
+                    console.log('Servidor: token no valido o expirado')
+                    estadoRetornar=false;
+                }else{
+                    // Si todo está bien, responder con éxito
+                    console.log('Servidor: El usuario tiene permitido eliminar el usuario')
+                    estadoRetornar=true;
+                    return estadoRetornar;
+                } 
+            } catch (error) {
                 estadoRetornar=false;
-            }else{
-                // Si todo está bien, responder con éxito
-                console.log('Servidor: El usuario tiene permitido eliminar el usuario')
-                estadoRetornar=true;
-                return estadoRetornar;
+                console.log('Servidor: token no valido o expirado');
             }
+            
         }
         
     });
