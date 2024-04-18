@@ -2,6 +2,8 @@
 version: '0.1'
 
 services:
+
+  #Servicio base de datos
   db:
     build: ./db
     ports:
@@ -9,6 +11,7 @@ services:
     container_name: db
 
 
+  #Servicio e servidor web
   server:
 
     #Ubicacion del dockerfile
@@ -22,6 +25,10 @@ services:
     #variables de entorno
     environment:
       - host=db
+      - hostName=rabbitmq
+      - username=guest
+      - passwordRabbit=guest
+      - vHost=/
       - user=root
       - password=root
       - database=apiDb
@@ -29,6 +36,25 @@ services:
     #Establece dependencia (este servicio depende del servicio db)
     depends_on:
       - db
-    #Reinicia el servicio en caso de fallo hasta que se pueda conectar a la base de datos
-    restart: on-failure
+  
+  #Servicio de mensajeria
+  rabbitmq:
+    image: "rabbitmq:3-management"
+
+    #Se definen dos puertos ya que es la version que tiene interfaz grafica
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+  
+  #Servicio consumidor
+  consumidor:
+     #Ubicacion del dockerfile
+    build: /consumidor
+
+    #nombre asignar al contenedor
+    container_name: consumidor
+    #Establece dependencia (este servicio depende del servicio db)
+    depends_on:
+      - rabbitmq
+
     

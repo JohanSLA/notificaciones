@@ -9,6 +9,7 @@
   "author": "Johan Londoño",
   "license": "ISC",
   "dependencies": {
+    "amqplib": "^0.10.4",
     "express": "^4.19.2",
     "jsonwebtoken": "^9.0.2",
     "mysql": "^2.18.1",

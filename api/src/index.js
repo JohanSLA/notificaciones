@@ -7,9 +7,13 @@ const http=require('http');
 //Importamos el modulo mysql para usar funciones con mysql
 const mysql=require('mysql2');
 
+//Importamos la libreria necesara para manejar los mensajes
+const amqp = require("amqplib");
+
 //Importamos las funciones necesarias para manejar las solicitudes que estan en el modulo manejador.js 
 const {manejarSolicitudGet,manejarSolicitudPost,manejarSolicitudPatch,manejarSolicitudPut,
-    manejarSolicitudDelete}=require('./manejador.js')
+    manejarSolicitudDelete}=require('./manejador.js');
+
 
 //Definimos el nombre que se asinara a la tabla de usuarios
 const tablaUsuarios='usuarios'
@@ -20,6 +24,7 @@ const port = 8080;
 
 //Llamado al metodo para conectarse a la base de datos que estara en el localhost y a la escucha por el puerto 3306
 const conexion = conexionDb();
+
 
 //Funcion la cual me manejara las solicitudes http(Aca entrare cada que use una url en el navegador por el puerto 8080)
 const handleResquest = (request,response) => {
@@ -32,7 +37,7 @@ const handleResquest = (request,response) => {
 
     switch (metodoPeticion) {
         case 'GET':
-            manejarSolicitudGet(request,response,conexion,tablaUsuarios)
+            manejarSolicitudGet(request,response,conexion)
             break;
         
         case 'POST':
@@ -108,5 +113,9 @@ function conexionDb() {
     })
 
     return conexion;
-  }
+}
+
+
+
+
 

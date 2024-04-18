@@ -1,8 +1,6 @@
 const mysql = require('mysql2')
-const querystring = require('querystring');
 const jwt = require('jsonwebtoken');
-const { parse } = require('path');
-const { Console } = require('console');
+const {conexionRabbit}=require('./productor.js');
 
 
 
@@ -11,7 +9,7 @@ const { Console } = require('console');
  * @param {*} request 
  * @param {*} response 
  */
-function manejarSolicitudGet(request,response,conexion,tablaUsuarios){
+function manejarSolicitudGet(request,response,conexion){
 
     //LLamado al metodo que me obtiene la url de la solicitud
     url=obtenerUrl(request);
@@ -130,8 +128,16 @@ function manejarSolicitudGet(request,response,conexion,tablaUsuarios){
                         const token = jwt.sign({ email, idUsuario }, 'secreto', { expiresIn: '1h', issuer: 'ingesis.uniquindio.edu.co' });
     
     
-                        // Devolver el token JWT como respuesta
+                        //Muestra la informacion por consola de la generacion del token
                         console.log('Servidor: Token generado exitosamente')
+
+                        const msgs = [
+                            {"email": usuario.email,"status":"logged in"}
+                        ]
+
+                        conexionRabbit(msgs);
+
+                        // Devolver el token JWT como respuesta
                         response.writeHead(200, { 'Content-Type': 'application/json' });
                         response.end(JSON.stringify({ token })); 
                     }

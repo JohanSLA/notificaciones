@@ -1,0 +1,11 @@
+.(GET) Busqueda para un usuario dado su id(id es el id del usuario a buscar): localhost:8080/busqueda?id=idUsuarioBuscar 
+
+.(GET) Busqueda para listar todos los usuarios : localhost:8080/busqueda/todos
+
+.(POST) Agregar usuario : localhost:8080/agregar  (Se debe ingresar los datos en el body de la solicitud)
+
+.(DELETE) Eliminar usuario : localhost:8080/eliminar?id=idUsuarioEliminar (Se debe ingrear el token por parametro) Nota: el usuario solo se podra eliminar el mismo
+
+.(PUT) Actualizar usuario : localhost:8080/actualizar  (Se debe ingresar los datos a actualizar en el body de la solicitud, el id debe ser de un usuario registrado y solo el usuario podra realizar actualizaciones de si mismo, tambien se debe agregar el token)
+
+.(GET) login del usuario : localhost:8080/login  (se indica el email y la contraseña en el body de la solicitud)
