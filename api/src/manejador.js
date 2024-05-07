@@ -9,7 +9,7 @@ const {conexionRabbit}=require('./productor.js');
  * @param {*} request 
  * @param {*} response 
  */
-function manejarSolicitudGet(request,response,conexion){
+function manejarSolicitudGet(request,response,conexion,versionServicio,inicioServicio,isReady){
 
     //LLamado al metodo que me obtiene la url de la solicitud
     url=obtenerUrl(request);
@@ -145,12 +145,76 @@ function manejarSolicitudGet(request,response,conexion){
             }
         });
     
+    }else if (url.includes('/health')) {
+
+        //Llamado al metodo para verificar si el servicio esta listo o no para recibir solicitudes
+        statusReady=verificarEstadoReady(isReady);
+
+        
+        const uptime = Date.now() - inicioServicio; // Tiempo en milisegundos
+
+        //Construccion del cuerpo de la respuesta
+        const responseBody = {
+            name: 'server',
+            status: 'UP',
+            versión: versionServicio,
+            uptime: `${(uptime / 1000).toFixed(2)} seconds`,
+            checks: [
+                {
+                    data: {
+                        from: inicioServicio,
+                        status: statusReady
+
+                    },
+                    name: 'Readiness check',
+                    status: statusReady
+                },
+                {
+                    data: {
+                        from: inicioServicio,
+                        status: 'ALIVE'
+                    },
+                    name: 'Liveness check',
+                    status: 'UP'
+                }
+            ]
+        };
+
+        response.setHeader('Content-Type', 'application/json');
+        response.writeHead(200);
+
+        //Envia la respuesta
+        response.end(JSON.stringify(responseBody));
+
+       
+        
+    }else if (url.includes('/health/ready')) {
+
+         // Endpoint para verificar si el servicio está listo para su uso
+         const status = isReady ? 'ready' : 'not ready';
+         response.writeHead(200, { 'Content-Type': 'application/json' });
+         response.end(JSON.stringify({ status }));
+        
+    }else if (url.includes('/health/live')) {
+
+        //----------- codigo --------------
+        
     }else{
           // Si la URL no es para buscar un usuario, devolver un error 404
           response.writeHead(404, {'Content-Type': 'text/plain'});
           response.end('Servidor: Problema con la url');
         }    
 }
+
+/**
+ * Metodo que me verifica si mi servicio esta listo o no
+ */
+function verificarEstadoReady(isReady){
+     // Endpoint para verificar si el servicio está listo para su uso
+     const status = isReady ? 'ready' : 'not ready';
+     return status;
+}
+
 
 /**
  * mMetodo que extrae el id de la url

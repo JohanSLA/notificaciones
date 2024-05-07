@@ -15,15 +15,28 @@ const {manejarSolicitudGet,manejarSolicitudPost,manejarSolicitudPatch,manejarSol
     manejarSolicitudDelete}=require('./manejador.js');
 
 
+
 //Definimos el nombre que se asinara a la tabla de usuarios
 const tablaUsuarios='usuarios'
+
+// Estado de disponibilidad del servicio
+let isReady = false;
 
 
 //Definimos el puerto de escucha del servidor
 const port = 8080;
 
+//Definimos la version del servicio
+const versionServicio=process.env.version || '1.0.1';
+
+//Registra el tiempo de inicio del servicio
+const inicioServicio =  new Date();
+
 //Llamado al metodo para conectarse a la base de datos que estara en el localhost y a la escucha por el puerto 3306
-const conexion = conexionDb();
+//Lleva el isReady ya que el servicio estara listo cuando el servidor haga conexion con la base de datos, en caso contrario
+//no estara listo
+
+const conexion = conexionDb(isReady);
 
 
 //Funcion la cual me manejara las solicitudes http(Aca entrare cada que use una url en el navegador por el puerto 8080)
@@ -37,7 +50,7 @@ const handleResquest = (request,response) => {
 
     switch (metodoPeticion) {
         case 'GET':
-            manejarSolicitudGet(request,response,conexion)
+            manejarSolicitudGet(request,response,conexion,versionServicio,inicioServicio,isReady)
             break;
         
         case 'POST':
@@ -68,8 +81,8 @@ const server =http.createServer(handleResquest);
 
 //Configuramos el servidor para que escuche por ese puerto
 server.listen(port,() => {
-    console.log('Server:' +' Servidor escuchando por el puerto '+port)
-    console.log('Servidor a la escucha por la url: http://localhost:'+port)
+    console.log('Server:' +' Servidor escuchando por el puerto '+port);
+    console.log('Servidor a la escucha por la url: http://localhost:'+port);
 })
 
 
@@ -90,28 +103,29 @@ function conexionDb() {
     }
 
     let conexion;
-      
-    conexion=mysql.createConnection(dbconfig);
+     
+    
+    try {
+        //Si al intentar hacer la conexion ocurre un erro
+        conexion=mysql.createConnection(dbconfig);
     
     conexion.connect((err) => {
         if(err){
             console.log('[db err]', err)
-            setTimeout(conMysql,200);
+
+            //Pone a ejecutar el codigo despues de 5000 milisegundos=5 segundos
+            //Este codigo se ejecuta hasta que se haga una conexión efectiva a la base de datos
+            setTimeout(conexionDb,5000);
+
         }else{
+            //Cambia el estado del servicio a "listo" dado que se realizo la conexión con la base de datos
+            isReady=true;
             console.log('Server:'+' DB conectada!');
         }
     })
-
-    conexion.on('error', err => {
-        console.log('[db err]', err);
-        if(err.code === 'PROTOCOL_CONNECTION_LOST'){
-            conexionDb();
-        }else{
-            //Si existe un error, reinicia la base de datos
-            conexionDb();
-        }
-    })
-
+    } catch (error) {
+        conexionDb(isReady);
+    }
     return conexion;
 }
 

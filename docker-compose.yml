@@ -32,6 +32,7 @@ services:
       - user=root
       - password=root
       - database=apiDb
+      - version=1.0.1
     
     #Establece dependencia (este servicio depende del servicio db)
     depends_on:
@@ -45,6 +46,9 @@ services:
     ports:
       - "5672:5672"
       - "15672:15672"
+    #Establece dependencia (este servicio depende del servicio db)
+    depends_on:
+      - server
   
   #Servicio consumidor
   consumidor:

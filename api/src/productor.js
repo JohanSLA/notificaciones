@@ -38,7 +38,7 @@ function conexionRabbit(msgs) {
             console.log('Servidor: canal creado')
 
             //crea la cola
-            //Si no hay una cola employees, la crea
+            //Si no hay una cola user, la crea
             const res = await channel.assertQueue(queue);
             console.log('Servidor: cola creada')
 
