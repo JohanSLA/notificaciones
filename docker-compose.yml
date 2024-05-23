@@ -60,5 +60,16 @@ services:
     #Establece dependencia (este servicio depende del servicio db)
     depends_on:
       - rabbitmq
+  
+  #Servicio base de datos del health
+  db_health:
+    build: ./db_health
+    ports:
+      - "3306:3306"
+    container_name: db_health
+    depends_on:
+      - server
+      - db
+
 
     

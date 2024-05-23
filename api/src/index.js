@@ -7,6 +7,9 @@ const http=require('http');
 //Importamos el modulo mysql para usar funciones con mysql
 const mysql=require('mysql2');
 
+//Importamos el modulo axios para hacer y recibir solicitudes 
+const axios=require('axios');
+
 //Importamos la libreria necesara para manejar los mensajes
 const amqp = require("amqplib");
 

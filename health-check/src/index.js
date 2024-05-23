@@ -16,12 +16,22 @@ async function checkServiceHealth(name) {
         throw new Error(`Service '${name}' not found`);
     }
     try {
+
+        //Prueba
+        console.log(service.endpoint)
+
+
         const response = await axios.get(service.endpoint);
+
         service.status = response.data.status || 'healthy';
+
+        return response.data;
+
     } catch (error) {
         service.status = 'unhealthy';
+        return service.status;
     }
-    return service.status;
+    
 }
 
 
@@ -38,7 +48,7 @@ async function checkAllServicesHealth() {
 // Crea un servidor HTTP simple.
 const server = http.createServer(async (req, res) => {
     // Manejar la ruta /register.
-    if (req.url === '/register' && req.method === 'POST') {
+    if (req.url === '/registrar' && req.method === 'POST') {
         let body = '';
         req.on('data', chunk => {
             body += chunk.toString();
@@ -46,8 +56,9 @@ const server = http.createServer(async (req, res) => {
         req.on('end', () => {
             const data = JSON.parse(body);
             registerService(data);
+            console.log('Servidor Health: Servicio registrado con exito\n')
             res.writeHead(200, { 'Content-Type': 'application/json' });
-            res.end(JSON.stringify({ message: 'Service registered successfully' }));
+            res.end(JSON.stringify({ message: 'Servicio '+data.name+ ' registrado con exito' }));
         });
     }
 
@@ -80,5 +91,5 @@ const server = http.createServer(async (req, res) => {
 
 // Inicia el servidor en el puerto 3000.
 server.listen(3000, () => {
-    console.log('Servidor Health: Health Monitor server corriendo en el puerto 3000');
+    console.log('\nServidor Health: Health Monitor server corriendo en el puerto 3000\n');
 });

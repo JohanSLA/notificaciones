@@ -183,6 +183,7 @@ function manejarSolicitudGet(request,response,conexion,versionServicio,inicioSer
         response.setHeader('Content-Type', 'application/json');
         response.writeHead(200);
 
+
         //Envia la respuesta
         response.end(JSON.stringify(responseBody));
 
@@ -202,7 +203,7 @@ function manejarSolicitudGet(request,response,conexion,versionServicio,inicioSer
     }else{
           // Si la URL no es para buscar un usuario, devolver un error 404
           response.writeHead(404, {'Content-Type': 'text/plain'});
-          response.end('Servidor: Problema con la url');
+          response.end('Servidor: Problema con la url ');
         }    
 }
 
